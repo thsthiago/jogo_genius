@@ -2,6 +2,8 @@ let order = []
 let clickedOrder = []
 let score = 0
 
+const pontos = document.querySelector('.pontos')
+const button = document.querySelector('button')
 const blue = document.querySelector('.blue')
 const red = document.querySelector('.red')
 const green = document.querySelector('.green')
@@ -14,7 +16,9 @@ let shuffleOrder = () => {
 
   for(let i in order) {
     let elementColor = createColorElement(order[i])
-    lightColor(elementColor, Number(i) + 1)
+    setTimeout(() => {
+      lightColor(elementColor, Number(i) + 1)
+    }, 1000)
   }
 }
 
@@ -25,7 +29,7 @@ const lightColor = (element, number) => {
   }, number - 250)
   setTimeout(() => {
     element.classList.remove('selected')
-  })
+  }, number - 50)
 }
 
 const checkOrder = () => {
@@ -36,7 +40,6 @@ const checkOrder = () => {
     }
   }
   if(clickedOrder.length == order.length) {
-    alert(`Pontuação: ${score}\nVocê acertou: Iniciando próximo nível!`)
     nextLevel()
   }
 }
@@ -68,24 +71,29 @@ const createColorElement = (color) => {
   }
 }
 
-const nextLevel = () => {
+const addPontos = () => {
   score++
+  pontos.innerHTML = `Pontos: ${score}`
+}
+
+const nextLevel = (inicio = false) => {
+  inicio ? pontos.innerHTML = `Pontos: 0` : addPontos()
   shuffleOrder()
 }
 
 const gameOver = () => {
-  alert(`Pontuação: ${score}!\nVocê perdeu o jogo!\nClique em "OK" para iniciar um novo jogo`)
+  alert(`Pontuação: ${score}\nVocê perdeu o jogo!\nClique em OK para iniciar um novo jogo!`)
   order = []
   clickedOrder = []
-
+  score = 0
   playGame()
 }
 
 const playGame = () => {
-  alert('Bem vindo ao Gênesis! Iniciando novo jogo!')
+  button.addEventListener('click', playGame)
   score = 0
 
-  nextLevel()
+  nextLevel(true)
 }
 
 green.addEventListener('click', () => click(0))
@@ -93,4 +101,4 @@ red.addEventListener('click', () => click(1))
 yellow.addEventListener('click',() =>  click(2))
 blue.addEventListener('click',() => click(3))
 
-playGame();
+button.addEventListener('click', playGame)
